@@ -1,17 +1,13 @@
-import torch
 import torch.nn as nn
 
 class HeartModel(nn.Module):
-    def __init__(self):
+    def __init__(self, input_size=13):
         super().__init__()
-        self.net = nn.Sequential(
-            nn.Linear(13, 32),
-            nn.ReLU(),
-            nn.Linear(32, 16),
-            nn.ReLU(),
-            nn.Linear(16, 1),
-            nn.Sigmoid()
-        )
+        self.fc1 = nn.Linear(input_size, 64)
+        self.relu = nn.ReLU()
+        self.fc2 = nn.Linear(64, 2)
 
     def forward(self, x):
-        return self.net(x)
+        x = self.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
