@@ -1,19 +1,26 @@
+import os
 import torch
 import joblib
-from .model import HeartModel
+import numpy as np
 
-MODEL_PATH = "saved_models/final_heart_model.pth"
-SCALER_PATH = "saved_models/scaler.pkl"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-model = HeartModel()
-model.load_state_dict(torch.load(MODEL_PATH, map_location="cpu"))
+MODEL_PATH = os.path.join(BASE_DIR, "saved_models", "final_heart_model.pth")
+SCALER_PATH = os.path.join(BASE_DIR, "saved_models", "scaler.pkl")
+
+model = torch.load(MODEL_PATH, map_location="cpu")
 model.eval()
 
 scaler = joblib.load(SCALER_PATH)
 
 def predict_heart_disease(features):
-    scaled = scaler.transform([features])
-    tensor = torch.FloatTensor(scaled)
+    # 🔴 THIS LINE IS CRITICAL
+    features = np.array(features).reshape(1, -1)
+
+    features = scaler.transform(features)
+    features = torch.tensor(features, dtype=torch.float32)
+
     with torch.no_grad():
-        prob = model(tensor).item()
-    return prob
+        output = model(features)
+
+    return int(output.argmax(dim=1).item())
