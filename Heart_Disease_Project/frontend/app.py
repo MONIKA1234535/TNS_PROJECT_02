@@ -34,7 +34,7 @@ for label in labels:
 if st.button("Predict"):
     try:
         response = requests.post(
-            "http://127.0.0.1:8000/predict",
+            "https://tns-project-02.onrender.com",
             json={"features": features}
         )
 
