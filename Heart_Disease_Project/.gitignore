@@ -1,0 +1,13 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+
+# Model artifacts
+backend/saved_models/*
+!backend/saved_models/.gitkeep
+
+# Environment files
+.env
